@@ -28,10 +28,14 @@ public class RouteServiceImpl implements RouteService {
     public RouteEntity create(RouteEntity route) {
         RouteEntity routeEntity = routeRepository.save(route);
         // spring will not re-call getRouteDefinitions until the next app restart, so via this API, routes have manually refreshed
-        applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-        log.info("PWA Routes refreshed successfully :)");
+        refresh();
 
         return routeEntity;
+    }
+
+    private void refresh() {
+        applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
+        log.info("PWA Routes refreshed successfully :)");
     }
 
     @Override
@@ -43,8 +47,7 @@ public class RouteServiceImpl implements RouteService {
         existing.setFilters(route.getFilters());
         existing.setEnabled(route.getEnabled());
         RouteEntity routeEntity = routeRepository.save(existing);
-        applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-        log.info("PWA Routes refreshed successfully :)");
+        refresh();
 
         return routeEntity;
     }
@@ -52,7 +55,6 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public void delete(Long id) {
         routeRepository.deleteById(id);
-        applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-        log.info("PWA Routes refreshed successfully :)");
+        refresh();
     }
 }
