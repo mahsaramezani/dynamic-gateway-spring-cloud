@@ -21,6 +21,8 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public List<RouteEntity> getAll() {
+
+        //todo implement Redis cache
         return routeRepository.findAll();
     }
 
